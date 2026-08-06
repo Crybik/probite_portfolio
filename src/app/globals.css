@@ -1,0 +1,347 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   MARASI AL-ARZ — design tokens
+
+   The palette is lifted from the factory photograph at blue hour: midnight
+   navy, kraft cardboard, warm concrete grey, and the charcoal of the anchor
+   stamp. It is deliberately quiet.
+
+   The saturated colour in this brand — ProBite red, pickle green, cheddar
+   orange — belongs to the products, and it stays inside the photographs. The
+   page around them never competes. Dark mode is simply the blue hour itself.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-surface-sunk: var(--surface-sunk);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
+  /* Fixed, ground-independent. The hero band stays midnight in both themes. */
+  --color-midnight: #0c1526;
+  --color-midnight-soft: #16233c;
+  --color-kraft: #b99a72;
+  --color-accent: var(--accent);
+
+  /* Line markers. Low-chroma on purpose — they identify a product family, they
+     do not colour the interface. */
+  --color-line-pickles: #6e7f63;
+  --color-line-peppers: #a08b4f;
+  --color-line-sauces: #a9744b;
+
+  --font-display: var(--font-archivo), "Arial Narrow", system-ui, sans-serif;
+  --font-sans: var(--font-archivo), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+}
+
+:root {
+  --ink: #23262b;
+  --ink-soft: #6e747e;
+  --paper: #f7f5f1;
+  --surface: #ffffff;
+  --surface-sunk: #edeae4;
+  --line: #dfdbd3;
+  --line-strong: #c2bdb3;
+  --accent: #2e4162;
+
+  --step--1: clamp(0.78rem, 0.75rem + 0.12vw, 0.85rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.09rem);
+  --step-1: clamp(1.18rem, 1.09rem + 0.42vw, 1.45rem);
+  --step-2: clamp(1.5rem, 1.28rem + 1.05vw, 2.15rem);
+  --step-3: clamp(2rem, 1.55rem + 2.2vw, 3.4rem);
+  --step-4: clamp(2.7rem, 1.75rem + 4.6vw, 5.6rem);
+  --step-5: clamp(3.4rem, 1.6rem + 8.4vw, 8.5rem);
+
+  --gutter: clamp(1.15rem, 4vw, 3.5rem);
+  --measure: 62ch;
+}
+
+.dark {
+  --ink: #e9e7e2;
+  --ink-soft: #98a3b5;
+  --paper: #0c1526;
+  --surface: #141f35;
+  --surface-sunk: #080f1c;
+  --line: #22304a;
+  --line-strong: #35486b;
+  --accent: #9fb6d8;
+}
+
+/* ── Base ──────────────────────────────────────────────────────────────────── */
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-kraft);
+  color: #1a1a1a;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.u-on-dark :focus-visible {
+  outline-color: #fff;
+}
+
+/* ── Typography roles ──────────────────────────────────────────────────────── */
+
+/* The wordmark is heavy, compressed, square-countered. Headlines quote it by
+   driving Archivo's width axis narrow rather than by picking a second face. */
+.u-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-variation-settings: "wdth" 86;
+  line-height: 0.94;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.u-display-xl {
+  font-size: var(--step-5);
+}
+.u-display-lg {
+  font-size: var(--step-4);
+}
+.u-display-md {
+  font-size: var(--step-3);
+}
+.u-display-sm {
+  font-size: var(--step-2);
+}
+
+/* The manifest voice: net weights, servings, codes, temperatures. */
+.u-mono {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+.u-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.u-measure {
+  max-width: var(--measure);
+}
+
+/* ── Layout ────────────────────────────────────────────────────────────────── */
+
+.u-container {
+  width: 100%;
+  max-width: 82rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.u-section {
+  padding-block: clamp(4rem, 9vw, 8.5rem);
+}
+
+/* ── Ruled manifest lines ──────────────────────────────────────────────────── */
+
+.u-rule {
+  border-top: 1px solid var(--line);
+}
+
+.u-rule-strong {
+  border-top: 2px solid var(--ink);
+}
+
+/* Repeating hairline ticks, like the edge of a printed form. */
+.u-ticks {
+  height: 10px;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--line-strong) 0 1px,
+    transparent 1px 9px
+  );
+}
+
+/* ── The stamp ─────────────────────────────────────────────────────────────── */
+
+.u-stamp-ring {
+  animation: stamp-spin 26s linear infinite;
+  transform-origin: center;
+}
+
+@keyframes stamp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Reveal on scroll ──────────────────────────────────────────────────────────
+   Only armed once the boot script confirms JS, so the page is fully readable
+   without it. */
+[data-js] .u-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+[data-js] .u-reveal-in {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* ── Marquee ───────────────────────────────────────────────────────────────── */
+
+.u-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee-x var(--marquee-duration, 42s) linear infinite;
+}
+
+@keyframes marquee-x {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.u-marquee-host:hover .u-marquee {
+  animation-play-state: paused;
+}
+
+/* ── Controls ──────────────────────────────────────────────────────────────── */
+
+.u-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border: 1.5px solid var(--ink);
+  color: var(--ink);
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.22s ease, color 0.22s ease,
+    border-color 0.22s ease, transform 0.22s ease;
+}
+
+.u-btn:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.u-btn:active {
+  transform: translateY(1px);
+}
+
+.u-btn-solid {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.u-btn-solid:hover {
+  background: transparent;
+  color: var(--ink);
+}
+
+/* On the midnight hero band the buttons sit on a fixed dark ground, so they
+   cannot inherit the theme's ink. */
+.u-on-dark .u-btn {
+  border-color: rgb(255 255 255 / 0.55);
+  color: #fff;
+}
+
+.u-on-dark .u-btn:hover {
+  background: #fff;
+  color: var(--color-midnight);
+  border-color: #fff;
+}
+
+.u-on-dark .u-btn-solid {
+  background: #fff;
+  border-color: #fff;
+  color: var(--color-midnight);
+}
+
+.u-on-dark .u-btn-solid:hover {
+  background: transparent;
+  color: #fff;
+}
+
+/* ── Surfaces ──────────────────────────────────────────────────────────────── */
+
+.u-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+.u-card:hover {
+  border-color: var(--line-strong);
+  box-shadow: 0 18px 40px -28px rgb(0 0 0 / 0.45);
+}
+
+/* Paper tooth. Kept faint — it should read as stock, not as texture. */
+.u-grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.dark .u-grain::before {
+  opacity: 0.06;
+}
+
+/* ── Motion preferences ────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  [data-js] .u-reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

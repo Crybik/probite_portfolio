@@ -105,6 +105,21 @@ the two things Latin roles rely on that break Arabic: tracking and tight display
 leading. Digits render as Arabic-Indic numerals in Arabic; phone numbers,
 barcodes and product slugs are pinned `dir="ltr"` and read the same in both.
 
+## Deploying
+
+Hosted on Railway (project `probite-portfolio`, service `probite-portfolio`,
+environment `production`). The service is connected to
+`mohammadlead2performance/probite_portfolio` on `main`, so **a push to `main`
+builds and deploys on its own** — there is no separate deploy step.
+
+Confirm a release the same way every time: the deployment Railway reports must
+carry the SHA that was pushed, *and* the live page must serve the new content.
+A green build alone is not a deploy.
+
+```bash
+railway deployment list --json
+```
+
 ## Accessibility
 
 Reveal animations are armed only when JavaScript is present (`[data-js]`), so the

@@ -109,7 +109,7 @@ barcodes and product slugs are pinned `dir="ltr"` and read the same in both.
 
 Hosted on Railway (project `probite-portfolio`, service `probite-portfolio`,
 environment `production`). The service is connected to
-`mohammadlead2performance/probite_portfolio` on `main`, so **a push to `main`
+`Crybik/probite_portfolio` on `main`, so **a push to `main`
 builds and deploys on its own** — there is no separate deploy step.
 
 Confirm a release the same way every time: the deployment Railway reports must

@@ -3,19 +3,21 @@
 import Image from "next/image";
 import { usePrefs } from "@/lib/prefs";
 import { COMPANY } from "@/lib/products";
+import { localiseDigits } from "@/lib/digits";
+import { SECTION_IDS } from "@/lib/sections";
 import { MarasiLockup } from "@/components/brand/MarasiLockup";
-
-const SECTION_IDS = ["range", "house", "process", "controls", "contact"] as const;
+import { SocialIcon } from "@/components/ui/SocialIcon";
 
 export function Footer() {
   const { t, locale } = usePrefs();
   const brandName = locale === "ar" ? COMPANY.nameAr : COMPANY.nameEn;
-  const year = 2026;
+  const year = localiseDigits(2026, locale);
+  const social = COMPANY.social.filter((s) => s.href);
 
   return (
     <footer className="u-on-dark relative bg-midnight text-white">
       <div className="u-container u-section !pb-10">
-        <div className="grid gap-12 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1fr)]">
+        <div className="grid gap-12 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_minmax(0,1.1fr)]">
           <div>
             <MarasiLockup
               className="h-6 w-auto text-white md:h-7"
@@ -58,6 +60,47 @@ export function Footer() {
             >
               {COMPANY.phone}
             </a>
+            <a
+              href={COMPANY.whatsappHref}
+              target="_blank"
+              rel="noreferrer"
+              className="u-mono mt-4 inline-flex items-center gap-2 text-white/75 transition-colors hover:text-white"
+            >
+              <SocialIcon id="whatsapp" />
+              {t.contact.whatsappAction}
+            </a>
+            {COMPANY.email ? (
+              <a
+                href={`mailto:${COMPANY.email}`}
+                dir="ltr"
+                className="u-mono mt-3 block text-white/75 transition-colors hover:text-white"
+              >
+                {COMPANY.email}
+              </a>
+            ) : null}
+            <p className="u-mono mt-4 text-white/45">{t.contact.locationValue}</p>
+
+            {social.length > 0 ? (
+              <div className="mt-8">
+                <p className="u-label text-white/40">{t.footer.follow}</p>
+                <ul className="mt-4 flex flex-wrap gap-2">
+                  {social.map((s) => (
+                    <li key={s.id}>
+                      <a
+                        href={s.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label={s.label}
+                        title={s.label}
+                        className="grid size-10 place-items-center border border-white/25 text-white/80 transition-colors hover:border-white hover:text-white"
+                      >
+                        <SocialIcon id={s.id} className="size-[1.1rem]" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
           </div>
         </div>
 

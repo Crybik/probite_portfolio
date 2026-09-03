@@ -238,10 +238,44 @@ export const LINE_CLASSES: Record<
   },
 };
 
-export const COMPANY = {
+export type SocialLink = {
+  id: "whatsapp" | "instagram" | "facebook" | "linkedin" | "tiktok";
+  label: string;
+  /** Leave empty until the official page exists — blank entries are not rendered. */
+  href: string;
+};
+
+export type Company = {
+  nameEn: string;
+  nameAr: string;
+  brand: string;
+  base: Bilingual;
+  /** Displayed form, and the tel: form with nothing but digits. */
+  phone: string;
+  phoneHref: string;
+  whatsappHref: string;
+  /**
+   * Official address on the company domain. Empty until the mailbox exists;
+   * nothing renders while it is blank, so a placeholder never reaches the page.
+   */
+  email: string;
+  social: SocialLink[];
+};
+
+export const COMPANY: Company = {
   nameEn: "Marasi Al-Arz",
   nameAr: "مراسي الأرز",
   brand: "ProBite",
-  phone: "+962 7 9222 7921",
-  phoneHref: "tel:+962792227921",
-} as const;
+  base: { en: "Iraq", ar: "العراق" },
+  phone: "+964 776 381 9955",
+  phoneHref: "tel:+9647763819955",
+  whatsappHref: "https://wa.me/9647763819955",
+  email: "",
+  social: [
+    { id: "whatsapp", label: "WhatsApp", href: "https://wa.me/9647763819955" },
+    { id: "instagram", label: "Instagram", href: "" },
+    { id: "facebook", label: "Facebook", href: "" },
+    { id: "linkedin", label: "LinkedIn", href: "" },
+    { id: "tiktok", label: "TikTok", href: "" },
+  ],
+};

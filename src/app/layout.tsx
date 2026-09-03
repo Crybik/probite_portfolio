@@ -1,6 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, IBM_Plex_Mono } from "next/font/google";
+import { Archivo, IBM_Plex_Mono, IBM_Plex_Sans_Arabic } from "next/font/google";
+import { cookies, headers } from "next/headers";
 import { PrefsProvider } from "@/lib/prefs";
+import {
+  DEFAULT_LOCALE,
+  DICT,
+  DIR,
+  LOCALE_COOKIE,
+  isLocale,
+  type Locale,
+} from "@/lib/dictionary";
 import "./globals.css";
 
 /**
@@ -23,34 +32,76 @@ const plexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  // Swap for the real domain at launch; it resolves the OG image URL.
-  metadataBase: new URL("https://marasialarz.com"),
-  title: {
-    default: "Marasi Al-Arz — food manufacturing",
-    template: "%s · Marasi Al-Arz",
-  },
-  description:
-    "Manufacturer of food-service pickles, peppers and sauces under the ProBite label. Generous formats, private label and export.",
-  keywords: [
-    "Marasi Al-Arz",
-    "ProBite",
-    "food service",
-    "pickles",
-    "jalapeño",
-    "cheddar cheese sauce",
-    "private label",
-    "food export",
-  ],
-  openGraph: {
-    title: "Marasi Al-Arz — food manufacturing",
-    description:
-      "Pickles, peppers and sauces in food-service formats, under the ProBite label.",
-    type: "website",
-    locale: "en",
-    images: [{ url: "/factory-night.jpg", width: 1920, height: 1080 }],
-  },
-};
+/**
+ * The Arabic edition's one family, carrying every role — Archivo has no Arabic
+ * and letter-spaced mono breaks the joined script. Plex Sans Arabic shares
+ * its bones with Plex Mono, so the two editions still read as one house.
+ * Not preloaded: the files are only fetched once Arabic text is on the page.
+ */
+const plexArabic = IBM_Plex_Sans_Arabic({
+  variable: "--font-plex-arabic",
+  subsets: ["arabic"],
+  weight: ["400", "500", "700"],
+  display: "swap",
+  preload: false,
+});
+
+/**
+ * The visitor's stored choice first; failing that, the browser's first
+ * language; failing that, English.
+ */
+async function resolveLocale(): Promise<Locale> {
+  const stored = (await cookies()).get(LOCALE_COOKIE)?.value;
+  if (isLocale(stored)) return stored;
+  const accept = (await headers()).get("accept-language") ?? "";
+  const first = accept.split(",")[0]?.trim().toLowerCase() ?? "";
+  return first.startsWith("ar") ? "ar" : DEFAULT_LOCALE;
+}
+
+/**
+ * Railway publishes the service hostname into the environment, which is the
+ * address the site actually answers on today. Replace with the company domain
+ * once one is pointed at the service.
+ */
+const SITE_URL = process.env.RAILWAY_PUBLIC_DOMAIN
+  ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`
+  : "https://marasialarz.com";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await resolveLocale();
+  const { title, description } = DICT[locale].meta;
+  const arabic = locale === "ar";
+
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: title,
+      template: "%s · Marasi Al-Arz",
+    },
+    description,
+    keywords: [
+      "Marasi Al-Arz",
+      "مراسي الأرز",
+      "ProBite",
+      "food import Iraq",
+      "food distribution Iraq",
+      "food service",
+      "pickles",
+      "jalapeño",
+      "cheddar cheese sauce",
+      "private label",
+      "wholesale food supply",
+    ],
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      locale: arabic ? "ar_IQ" : "en_US",
+      alternateLocale: arabic ? "en_US" : "ar_IQ",
+      images: [{ url: "/factory-night.jpg", width: 1920, height: 1080 }],
+    },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: [
@@ -71,19 +122,21 @@ if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light
 if(t==='dark'){d.classList.add('dark');}
 }catch(e){}})();`;
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const locale = await resolveLocale();
+
   return (
     <html
-      lang="en"
-      dir="ltr"
+      lang={locale}
+      dir={DIR[locale]}
       suppressHydrationWarning
-      className={`${archivo.variable} ${plexMono.variable} h-full antialiased`}
+      className={`${archivo.variable} ${plexMono.variable} ${plexArabic.variable} h-full antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: BOOT }} />
       </head>
       <body className="min-h-full flex flex-col">
-        <PrefsProvider>{children}</PrefsProvider>
+        <PrefsProvider initialLocale={locale}>{children}</PrefsProvider>
       </body>
     </html>
   );

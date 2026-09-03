@@ -5,6 +5,9 @@ import { Hero } from "@/components/sections/Hero";
 import { Ticker, Figures } from "@/components/sections/Figures";
 import { Range } from "@/components/sections/Range";
 import { House } from "@/components/sections/House";
+import { Business } from "@/components/sections/Business";
+import { Partners } from "@/components/sections/Partners";
+import { Profile } from "@/components/sections/Profile";
 import { Process } from "@/components/sections/Process";
 import { Controls } from "@/components/sections/Controls";
 import { CallToAction, Contact } from "@/components/sections/Contact";
@@ -20,6 +23,9 @@ export default function Page() {
         <Figures />
         <Range />
         <House />
+        <Business />
+        <Partners />
+        <Profile />
         <Process />
         <Controls />
         <CallToAction />

@@ -11,6 +11,7 @@ import {
 import { usePrefs } from "@/lib/prefs";
 import { COMPANY } from "@/lib/products";
 import { Reveal } from "@/components/ui/Reveal";
+import { SocialIcon } from "@/components/ui/SocialIcon";
 
 /* ─────────────────────────────────────────────────────────────────────────────
    The closing pair.
@@ -73,6 +74,9 @@ const EMPTY: Record<FieldName, string> = {
   email: "",
   message: "",
 };
+
+const DIRECT_ROW =
+  "grid grid-cols-[6.5rem_minmax(0,1fr)] items-baseline gap-4 border-t border-line py-3.5";
 
 const CONTROL =
   "w-full rounded-[2px] border bg-transparent px-4 py-3.5 text-start " +
@@ -216,13 +220,54 @@ export function Contact() {
 
             <div className="mt-12 border-t border-line pt-6">
               <p className="u-label">{t.contact.direct}</p>
-              <a
-                href={COMPANY.phoneHref}
-                dir="ltr"
-                className="mt-3 inline-block font-mono text-xl tabular-nums tracking-[0.06em] text-ink transition-colors duration-200 hover:text-accent sm:text-2xl"
-              >
-                {COMPANY.phone}
-              </a>
+              {/* One ruled row per channel, like the back of a shipping
+                  document. The address row only exists once there is one. */}
+              <dl className="mt-4 border-b border-line">
+                <div className={DIRECT_ROW}>
+                  <dt className="u-label">{t.contact.phoneLabel}</dt>
+                  <dd>
+                    <a
+                      href={COMPANY.phoneHref}
+                      dir="ltr"
+                      className="inline-block font-mono text-lg tabular-nums tracking-[0.06em] text-ink transition-colors duration-200 hover:text-accent sm:text-xl"
+                    >
+                      {COMPANY.phone}
+                    </a>
+                  </dd>
+                </div>
+                <div className={DIRECT_ROW}>
+                  <dt className="u-label">{t.contact.whatsappLabel}</dt>
+                  <dd>
+                    <a
+                      href={COMPANY.whatsappHref}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="u-mono inline-flex items-center gap-2 text-ink underline underline-offset-4 transition-colors duration-200 hover:text-accent"
+                    >
+                      <SocialIcon id="whatsapp" />
+                      {t.contact.whatsappAction}
+                    </a>
+                  </dd>
+                </div>
+                {COMPANY.email ? (
+                  <div className={DIRECT_ROW}>
+                    <dt className="u-label">{t.contact.emailLabel}</dt>
+                    <dd>
+                      <a
+                        href={`mailto:${COMPANY.email}`}
+                        dir="ltr"
+                        className="u-mono text-ink underline underline-offset-4 transition-colors duration-200 hover:text-accent"
+                      >
+                        {COMPANY.email}
+                      </a>
+                    </dd>
+                  </div>
+                ) : null}
+                <div className={DIRECT_ROW}>
+                  <dt className="u-label">{t.contact.locationLabel}</dt>
+                  <dd className="text-ink">{t.contact.locationValue}</dd>
+                </div>
+              </dl>
             </div>
           </Reveal>
 

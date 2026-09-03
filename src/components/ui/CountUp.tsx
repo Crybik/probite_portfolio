@@ -2,13 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePrefs } from "@/lib/prefs";
-
-const AR_DIGITS = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
-
-function localiseDigits(text: string, locale: string) {
-  if (locale !== "ar") return text;
-  return text.replace(/\d/g, (d) => AR_DIGITS[Number(d)]).replace(".", "٫");
-}
+import { localiseDigits } from "@/lib/digits";
 
 /**
  * Counts up to `value` the first time it is seen.

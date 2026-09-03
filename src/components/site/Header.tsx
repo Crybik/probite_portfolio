@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { usePrefs } from "@/lib/prefs";
+import { COMPANY } from "@/lib/products";
+import { DIR } from "@/lib/dictionary";
+import { ordinal } from "@/lib/digits";
+import { BAR_IDS, SECTION_IDS } from "@/lib/sections";
 import { MarasiLockup } from "@/components/brand/MarasiLockup";
 import { MarasiAnchor } from "@/components/brand/MarasiAnchor";
-
-const SECTION_IDS = ["range", "house", "process", "controls", "contact"] as const;
 
 function SunIcon() {
   return (
@@ -25,7 +27,7 @@ function MoonIcon() {
 }
 
 export function Header() {
-  const { t, locale, theme, toggleTheme } = usePrefs();
+  const { t, locale, theme, toggleTheme, toggleLocale } = usePrefs();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -49,14 +51,22 @@ export function Header() {
     };
   }, [open]);
 
-  const links = SECTION_IDS.map((id) => ({ id, label: t.nav[id] }));
-  const brandName = locale === "ar" ? "مراسي الأرز" : "Marasi Al-Arz";
+  const barLinks = BAR_IDS.map((id) => ({ id, label: t.nav[id] }));
+  const allLinks = SECTION_IDS.map((id) => ({ id, label: t.nav[id] }));
+  const brandName = locale === "ar" ? COMPANY.nameAr : COMPANY.nameEn;
+
+  // The toggle is set in the language it leads to, so its own tracking and
+  // face are fixed here rather than inherited from the page it sits on.
+  const other = locale === "ar" ? "en" : "ar";
 
   // Over the hero the bar is transparent on a fixed midnight ground; once the
   // page moves it becomes paper and adopts the theme's ink.
   const bar = scrolled
     ? "bg-paper/95 border-line text-ink supports-[backdrop-filter]:bg-paper/85"
     : "bg-transparent border-transparent text-white u-on-dark";
+
+  const control =
+    "grid place-items-center border border-current/35 transition-colors hover:bg-current/10";
 
   return (
     <>
@@ -85,8 +95,8 @@ export function Header() {
             />
           </a>
 
-          <nav className="hidden items-center gap-7 lg:flex" aria-label={t.nav.menu}>
-            {links.map((l) => (
+          <nav className="hidden items-center gap-5 lg:flex xl:gap-7" aria-label={t.nav.menu}>
+            {barLinks.map((l) => (
               <a
                 key={l.id}
                 href={`#${l.id}`}
@@ -100,8 +110,26 @@ export function Header() {
           <div className="flex items-center gap-2">
             <button
               type="button"
+              onClick={toggleLocale}
+              lang={other}
+              dir={DIR[other]}
+              className={`${control} u-mono h-9 px-3`}
+              style={{
+                letterSpacing: 0,
+                fontFamily:
+                  other === "ar"
+                    ? "var(--font-plex-arabic), system-ui, sans-serif"
+                    : undefined,
+              }}
+              aria-label={t.nav.languageA11y}
+            >
+              {t.nav.language}
+            </button>
+
+            <button
+              type="button"
               onClick={toggleTheme}
-              className="grid size-9 place-items-center border border-current/35 transition-colors hover:bg-current/10"
+              className={`${control} size-9`}
               aria-label={t.a11y.toggleTheme}
               aria-pressed={theme === "dark"}
             >
@@ -111,7 +139,7 @@ export function Header() {
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="grid size-9 place-items-center border border-current/35 transition-colors hover:bg-current/10 lg:hidden"
+              className={`${control} size-9 lg:hidden`}
               aria-label={t.nav.menu}
               aria-expanded={open}
             >
@@ -124,7 +152,7 @@ export function Header() {
       </header>
 
       {open && (
-        <div className="fixed inset-0 z-[55] bg-paper lg:hidden">
+        <div className="fixed inset-0 z-[55] overflow-y-auto bg-paper lg:hidden">
           <div className="u-container flex h-16 items-center justify-between md:h-20">
             <MarasiAnchor className="h-8 w-auto text-ink" title={brandName} />
             <button
@@ -138,16 +166,16 @@ export function Header() {
               </svg>
             </button>
           </div>
-          <nav className="u-container mt-6 flex flex-col" aria-label={t.nav.menu}>
-            {links.map((l, i) => (
+          <nav className="u-container mt-4 flex flex-col pb-10" aria-label={t.nav.menu}>
+            {allLinks.map((l, i) => (
               <a
                 key={l.id}
                 href={`#${l.id}`}
                 onClick={() => setOpen(false)}
-                className="u-display u-display-sm border-b border-line py-5 text-ink"
+                className="u-display u-display-sm border-b border-line py-4 text-ink"
               >
                 <span className="u-mono me-4 align-middle text-ink-soft">
-                  {String(i + 1).padStart(2, "0")}
+                  {ordinal(i + 1, locale)}
                 </span>
                 {l.label}
               </a>

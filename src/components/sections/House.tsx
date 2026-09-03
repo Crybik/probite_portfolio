@@ -8,9 +8,13 @@ import { usePrefs } from "@/lib/prefs";
  *
  * Set like the head of a manifest: a hairline, a label, then the claim held
  * to the start column with the prose sitting away from it on the far side of
- * the grid. The three pillars below are a real enumeration — manufacture,
- * export, private label — so their numbers are printed, not decorative. They
- * arrive already localised (01 / ٠١) and are rendered exactly as given.
+ * the grid. The principal activity is stated once, in the mono voice, under
+ * the heading — it is the one line a reader should be able to quote.
+ *
+ * The three pillars below are a real enumeration — import, distribute, own
+ * brand — so their numbers are printed, not decorative. They arrive already
+ * localised (01 / ٠١) and are rendered exactly as given. Vision and mission
+ * close the section as a ruled pair.
  *
  * The columns are divided by border-s rather than border-l, so the rules land
  * on the correct edge when the page flips to Arabic. Below `md` the row stacks
@@ -18,7 +22,8 @@ import { usePrefs } from "@/lib/prefs";
  */
 export function House() {
   const { t } = usePrefs();
-  const { eyebrow, title, body, pillars } = t.house;
+  const { eyebrow, title, activityLabel, activity, body, pillars, vision, mission } =
+    t.house;
   const lastPillar = pillars.length - 1;
 
   return (
@@ -39,6 +44,10 @@ export function House() {
             <h2 id="house-title" className="u-display u-display-md">
               {title}
             </h2>
+            <dl className="mt-8 border-t border-line-strong pt-4">
+              <dt className="u-label">{activityLabel}</dt>
+              <dd className="u-mono mt-2 text-ink">{activity}</dd>
+            </dl>
           </Reveal>
 
           <Reveal delay={120} className="lg:col-span-6 lg:col-start-7">
@@ -67,6 +76,26 @@ export function House() {
               <p className="u-mono text-ink-soft">{pillar.k}</p>
               <h3 className="u-display u-display-sm mt-4">{pillar.title}</h3>
               <p className="mt-3 text-ink-soft">{pillar.body}</p>
+            </Reveal>
+          ))}
+        </div>
+
+        {/* Vision and mission: two statements, ruled off and set larger than
+            body so they are read as commitments rather than as more prose. */}
+        <div className="u-rule-strong mt-16 grid gap-y-10 md:mt-24 md:grid-cols-2 md:gap-y-0">
+          {[vision, mission].map((item, i) => (
+            <Reveal
+              key={item.title}
+              delay={i * 80}
+              className={[
+                "pt-8",
+                i === 0 ? "md:pe-10 lg:pe-16" : "border-t border-line md:border-t-0 md:border-s md:ps-10 lg:ps-16",
+              ].join(" ")}
+            >
+              <h3 className="u-label">{item.title}</h3>
+              <p className="u-measure mt-4 text-[length:var(--step-1)] leading-relaxed text-ink">
+                {item.body}
+              </p>
             </Reveal>
           ))}
         </div>

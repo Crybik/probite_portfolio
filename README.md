@@ -1,7 +1,8 @@
 # Marasi Al-Arz — portfolio site
 
-A marketing site for **Marasi Al-Arz**, a food manufacturer and exporter, and
-its food-service brand **ProBite**.
+A marketing site for **Marasi Al-Arz**, an Iraq-based importer, trader and
+distributor of food products, and its own brand **ProBite**. Bilingual —
+English and Arabic — from one dictionary.
 
 Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v4.
 
@@ -51,8 +52,10 @@ there is no `tailwind.config.ts`). Utility classes are prefixed `.u-`.
 | Path | |
 |---|---|
 | `src/app/globals.css` | design tokens + every `.u-` utility |
-| `src/lib/dictionary.ts` | **all** copy — change wording here, not in components |
-| `src/lib/products.ts` | product data transcribed from the physical labels |
+| `src/lib/dictionary.ts` | **all** copy, English and Arabic — change wording here, not in components |
+| `src/lib/sections.ts` | the section order and which sections fit in the header bar |
+| `src/lib/digits.ts` | Arabic-Indic digit rendering for indices and counts |
+| `src/lib/products.ts` | product data transcribed from the physical labels, and `COMPANY` (phone, WhatsApp, email, social links) |
 | `src/lib/prefs.tsx` | theme context |
 | `src/components/brand/` | the Marasi mark, generated from the source PDF |
 | `src/components/sections/` | one file per page section |
@@ -82,9 +85,25 @@ Light is warm paper and charcoal; dark is the blue hour from the hero
 photograph. The choice persists in `localStorage` and is applied by an inline
 script before first paint, so there is no flash of the wrong theme.
 
-The site is English only. `Locale`, `useBi()` and the Arabic label
-transcriptions in `products.ts` are left in place so an Arabic edition can be
-added later without redoing the data — but nothing renders anything but English.
+## Language
+
+The site ships in English and Arabic. The choice lives in a cookie
+(`marasi.locale`) so the **server renders the right edition** — there is no
+flash of English before Arabic. With no cookie, the browser's first
+`Accept-Language` decides; the toggle in the header writes the cookie and flips
+`<html lang dir>` in place.
+
+Every string is in `src/lib/dictionary.ts` twice: `EN` defines the shape and
+`AR` is typed against it, so a string added on one side must be added on the
+other before the project compiles. Product data in `products.ts` was already
+bilingual.
+
+Layout is written in logical properties (`start`/`end`, `ps`/`pe`), so nothing
+is mirrored by hand. The Arabic edition swaps every type role to **IBM Plex
+Sans Arabic** through three `--face-*` variables in `globals.css`, and resets
+the two things Latin roles rely on that break Arabic: tracking and tight display
+leading. Digits render as Arabic-Indic numerals in Arabic; phone numbers,
+barcodes and product slugs are pinned `dir="ltr"` and read the same in both.
 
 ## Accessibility
 
@@ -100,16 +119,25 @@ errors through `aria-describedby`, and focus is always visible.
 - **The contact form is a demo.** It validates and shows a success state entirely
   in the browser; nothing is transmitted. Wire it to a real endpoint or mail
   service. The form itself says so on screen.
-- **`metadataBase`** in `src/app/layout.tsx` points at a placeholder domain.
+- **`metadataBase`** in `src/app/layout.tsx` uses Railway's public hostname
+  when it is present in the environment and falls back to a placeholder domain.
+  Point it at the company domain once one exists.
+- **Corporate email is not on the page yet.** `COMPANY.email` in
+  `src/lib/products.ts` is empty; nothing renders until an address on the
+  company domain is supplied. Same for the social entries in `COMPANY.social` —
+  only entries with a URL are rendered (WhatsApp is the one live link today).
+- **Partner names are typeset, not badged.** No artwork was supplied for
+  99 Grill or Chicken Dip; drop wordmarks into `Partners.tsx` when available.
 - **Figures are label facts, not company statistics.** Everything in the
   "Off the label" band and every spec row is transcribed from the packaging in
   `visuals/`. No revenue, headcount, client or certification claims were invented
   — if you want claims like HACCP or ISO on the page, add them to
   `src/lib/dictionary.ts` once you can evidence them.
 - **The "Bilingual labelling" claim** in the Standards section refers to the
-  packaging, which genuinely is bilingual. The website is not.
+  packaging, which genuinely is bilingual — as, now, is the site.
 - **Origin copy is parked.** All "Made in Jordan" lines were removed at the
   client's request; reintroduce them in `src/lib/dictionary.ts` when wanted.
-- The company/brand relationship is presented as **Marasi Al-Arz is the house,
-  ProBite is its food-service label**. Correct the copy in `dictionary.ts` if
-  that is not the intended framing.
+- The company/brand relationship is presented as **Marasi Al-Arz is the
+  importer and distributor, ProBite is its own brand**, per the company profile
+  supplied in September 2026. The profile spells the name "Marasi Al-Riz"; the
+  logo and the Arabic (مراسي الأرز) say Al-Arz, so the site keeps Al-Arz.

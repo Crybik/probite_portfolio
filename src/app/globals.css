@@ -35,12 +35,22 @@
   --color-line-peppers: #a08b4f;
   --color-line-sauces: #a9744b;
 
-  --font-display: var(--font-archivo), "Arial Narrow", system-ui, sans-serif;
-  --font-sans: var(--font-archivo), system-ui, -apple-system, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+  /* Each role points at a face variable so the Arabic edition can swap the
+     family in one place — see "Arabic edition" below. Plex Sans Arabic sits in
+     every stack as the fallback for any Arabic glyph on the English page. */
+  --font-display: var(--face-display), var(--font-plex-arabic), "Arial Narrow",
+    system-ui, sans-serif;
+  --font-sans: var(--face-sans), var(--font-plex-arabic), system-ui,
+    -apple-system, sans-serif;
+  --font-mono: var(--face-mono), var(--font-plex-arabic), ui-monospace,
+    "SFMono-Regular", monospace;
 }
 
 :root {
+  --face-display: var(--font-archivo);
+  --face-sans: var(--font-archivo);
+  --face-mono: var(--font-plex-mono);
+
   --ink: #23262b;
   --ink-soft: #6e747e;
   --paper: #f7f5f1;
@@ -233,6 +243,18 @@ body {
   animation-play-state: paused;
 }
 
+/* Under RTL the strip is laid out from the right and overflows to the left,
+   so it has to travel the other way for the wrap to stay seamless. */
+html[dir="rtl"] .u-marquee {
+  animation-name: marquee-x-rtl;
+}
+
+@keyframes marquee-x-rtl {
+  to {
+    transform: translateX(50%);
+  }
+}
+
 /* ── Controls ──────────────────────────────────────────────────────────────── */
 
 .u-btn {
@@ -323,6 +345,60 @@ body {
 
 .dark .u-grain::before {
   opacity: 0.06;
+}
+
+/* ── Arabic edition ────────────────────────────────────────────────────────────
+   One family, IBM Plex Sans Arabic, carries every role. Two things the Latin
+   roles rely on are poison for Arabic: tracking, which breaks the joins
+   between letters, and the tight display leading, which clips the ascenders
+   and the marks. Both are reset here; the layout itself is already logical
+   (start/end, ps/pe) and needs nothing. */
+
+html[dir="rtl"] {
+  --face-display: var(--font-plex-arabic);
+  --face-sans: var(--font-plex-arabic);
+  --face-mono: var(--font-plex-arabic);
+  --measure: 58ch;
+}
+
+html[dir="rtl"] body {
+  line-height: 1.8;
+}
+
+html[dir="rtl"] .u-display {
+  font-weight: 700;
+  font-variation-settings: normal;
+  line-height: 1.22;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Arabic display type carries more visual mass than compressed caps, so the
+   two largest steps come down a touch to hold the same measure. */
+html[dir="rtl"] .u-display-xl {
+  font-size: calc(var(--step-5) * 0.82);
+}
+
+html[dir="rtl"] .u-display-lg {
+  font-size: calc(var(--step-4) * 0.86);
+}
+
+html[dir="rtl"] :is(.u-mono, .u-label, .u-btn) {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+html[dir="rtl"] .u-mono {
+  font-size: calc(var(--step--1) * 1.1);
+}
+
+html[dir="rtl"] .u-label {
+  font-size: 0.8rem;
+}
+
+html[dir="rtl"] .u-btn {
+  font-size: 0.88rem;
+  font-weight: 500;
 }
 
 /* ── Motion preferences ────────────────────────────────────────────────────── */

@@ -7,11 +7,12 @@ import { usePrefs } from "@/lib/prefs";
  * A hairline reading indicator pinned under the header.
  *
  * Written straight to the DOM through a ref rather than through state — this
- * updates on every scroll frame and has no business re-rendering React.
+ * updates on every scroll frame and has no business re-rendering React. It
+ * grows from the reading edge, so the origin follows the page direction.
  */
 export function ScrollProgress() {
   const ref = useRef<HTMLDivElement>(null);
-  const { t } = usePrefs();
+  const { t, dir } = usePrefs();
 
   useEffect(() => {
     let frame = 0;
@@ -48,7 +49,10 @@ export function ScrollProgress() {
       <div
         ref={ref}
         className="h-full bg-kraft"
-        style={{ transform: "scaleX(0)", transformOrigin: "left" }}
+        style={{
+          transform: "scaleX(0)",
+          transformOrigin: dir === "rtl" ? "right" : "left",
+        }}
       />
     </div>
   );

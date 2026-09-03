@@ -2,17 +2,11 @@
 
 import { Reveal } from "@/components/ui/Reveal";
 import { usePrefs } from "@/lib/prefs";
+import { ordinal } from "@/lib/digits";
 
 /* The house and process sections carry their own `k` ordinals in the dictionary
    (01 / ٠١). The controls copy does not, so the index is derived here rather
    than invented as content — it stays a typographic marker, not a claim. */
-const AR_DIGITS = "٠١٢٣٤٥٦٧٨٩";
-
-function ordinal(n: number, arabic: boolean) {
-  const western = String(n).padStart(2, "0");
-  if (!arabic) return western;
-  return western.replace(/[0-9]/g, (d) => AR_DIGITS[Number(d)]);
-}
 
 /* Hairline separators instead of boxes. Every cell rules off the top; the
    vertical rule only appears once a cell is no longer first in its row, which
@@ -33,7 +27,6 @@ function cellClass(i: number) {
  */
 export function Controls() {
   const { t, locale } = usePrefs();
-  const arabic = locale === "ar";
   const { eyebrow, title, lede, items } = t.controls;
 
   return (
@@ -76,7 +69,7 @@ export function Controls() {
               className={cellClass(i)}
             >
               <p className="u-mono text-white/60" aria-hidden="true">
-                {ordinal(i + 1, arabic)}
+                {ordinal(i + 1, locale)}
               </p>
               <h3 className="mt-3 text-[length:var(--step-1)] font-semibold text-white">
                 {item.title}

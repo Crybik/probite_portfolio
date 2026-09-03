@@ -5,13 +5,11 @@ import { useMemo, useState, type CSSProperties } from "react";
 import { Reveal } from "@/components/ui/Reveal";
 import { CATEGORIES, LINE_CLASSES, PRODUCTS } from "@/lib/products";
 import { useBi, usePrefs } from "@/lib/prefs";
-
-const AR_DIGITS = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
+import { localiseDigits } from "@/lib/digits";
 
 /** Indices and counts follow the numerals already printed in the data. */
 function figures(value: string | number, arabic: boolean) {
-  const text = String(value);
-  return arabic ? text.replace(/\d/g, (d) => AR_DIGITS[Number(d)]) : text;
+  return localiseDigits(value, arabic ? "ar" : "en");
 }
 
 /**
@@ -170,7 +168,7 @@ export function Range() {
                           </div>
                         </div>
                         <figcaption className="mt-3 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-t border-line pt-3">
-                          <span className="u-mono text-ink-soft">
+                          <span className="u-mono text-ink-soft" dir="ltr">
                             {product.slug}
                           </span>
                           <a

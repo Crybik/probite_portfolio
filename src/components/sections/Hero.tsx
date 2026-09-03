@@ -62,7 +62,7 @@ export function Hero() {
               priority
             />
             <figcaption className="u-mono mt-4 text-white/50">
-              Our food-service label
+              {t.hero.labelCaption}
             </figcaption>
           </figure>
         </div>
